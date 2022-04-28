@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:her2/constants/routes.dart';
 
-
-class MyLogin extends StatefulWidget {
-  const MyLogin({ Key? key }) : super(key: key);
+class MyRegister extends StatefulWidget {
+  const MyRegister({ Key? key }) : super(key: key);
 
   @override
-  _MyLoginState createState() => _MyLoginState();
+  _MyRegisterState createState() => _MyRegisterState();
 }
 
-class _MyLoginState extends State<MyLogin> {
+class _MyRegisterState extends State<MyRegister> {
   @override
-  // final _auth = FirebaseAuth.instance; 
   Widget build(BuildContext context) {
-    return Container(
+      return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          
           image: AssetImage('assets/register1.jpg'), fit:BoxFit.cover
         )
         ),
         child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
           backgroundColor: Colors.transparent,
           body:Stack(
             children: [
               Container(
-                padding:EdgeInsets.only(left: 35,top: 130),
-                child: Text('Welcome\nBack',
+                padding:EdgeInsets.only(left: 35,top: 70),
+                child: Text('Create\nAccount',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 33
@@ -35,31 +37,49 @@ class _MyLoginState extends State<MyLogin> {
               SingleChildScrollView(
                 child: Container(
                   padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.5,
+                  top: MediaQuery.of(context).size.height * 0.28,
                   right: 35,
                   left: 35),
                   child: Column(
                     children: [
-                      TextFormField(
+                      TextField(
                         decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.mail),
-                          fillColor: Colors.grey[100],
-                          hintText: 'Email',
+                          prefixIcon: Icon(Icons.person),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.black)
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey)
+                          ),
+                          hintText: 'Name',
+                          hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10)
                           )
                         ),
-                        validator: (value)
-                        {
-                          if(value!.isEmpty)
-                          {
-                            return("Please Enter Your Email");
-                          }
-                          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-                              .hasMatch(value)) {
-                            return ("Please Enter a valid email");
-                          }
-                        }
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.email),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.black)
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey)
+                          ),
+                          hintText: 'Email',
+                          hintStyle: TextStyle(color: Colors.black),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)
+                          )
+                        ),
                       ),
                       SizedBox(
                         height: 30,
@@ -67,9 +87,17 @@ class _MyLoginState extends State<MyLogin> {
                       TextField(
                         obscureText: true,
                         decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.vpn_key),
-                          fillColor: Colors.grey[100],
+                          prefixIcon: Icon(Icons.vpn_key_rounded),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.black)
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey)
+                          ),
                           hintText: 'Password',
+                          hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10)
                           )
@@ -83,19 +111,18 @@ class _MyLoginState extends State<MyLogin> {
                         children: [
                         Text('Login',style: 
                         TextStyle(
-                          color: Color(0xff4c505b),
+                          color: Colors.black,
                           fontSize: 27,
                           fontWeight: FontWeight.w700,
                           ),
                         ),
                         CircleAvatar(
-                          
                           radius: 30,
                           backgroundColor: Color(0xff4c505b),
                           child: IconButton(
                             color: Colors.white,
                             onPressed: (){
-                              Navigator.pushNamed(context, 'home_drawer');
+                            Navigator.pushNamed(context, homeDrawerPage);
                             },
                             icon: Icon(
                               Icons.arrow_forward,
@@ -112,24 +139,16 @@ class _MyLoginState extends State<MyLogin> {
                       children: [
                         TextButton(
                           onPressed: (){
-                            Navigator.pushNamed(context, 'register');
+                            Navigator.pushNamed(context, loginPage);
                           }, 
-                          child: Text('Sign Up',style: TextStyle(
+                          child: Text('Sign In',style: TextStyle(
                           decoration: TextDecoration.underline,
                           fontSize: 18,
-                          color: Color(0xff4c505b),
+                          color: Colors.black
                         ),
                         )
                         ),
-                        // TextButton(
-                        //   onPressed: (){}, 
-                        //   child: Text('Forgot Password',style: TextStyle(
-                        //   decoration: TextDecoration.underline,
-                        //   fontSize: 18,
-                        //   color: Color(0xff4c505b),
-                        // ),
-                        // )
-                        // )
+                        
                       ],
                     )
                     ],
@@ -141,4 +160,4 @@ class _MyLoginState extends State<MyLogin> {
         ),
     );
   }
-}
+  }

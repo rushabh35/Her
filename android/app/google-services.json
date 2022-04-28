@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "257764412388",
+    "project_id": "her-period-tracker",
+    "storage_bucket": "her-period-tracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257764412388:android:8e9bc3264f8c8305e695f1",
+        "android_client_info": {
+          "package_name": "com.example.her2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "257764412388-s573rvsfsibdk45e80ov57nku9do37ni.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAv7D58-gncjMKC3UcXzRu3o2_pF5S77Zk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "257764412388-s573rvsfsibdk45e80ov57nku9do37ni.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

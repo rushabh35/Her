@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:her2/Home.dart';
-import 'package:her2/Home_drawer.dart';
-import 'package:her2/Login.dart';
-import 'package:her2/Onboarding.dart';
-import 'package:her2/Splash.dart';
-import 'package:her2/register.dart';
-import 'Home.dart';
+import 'pages/home/Home.dart';
+import 'widgets/Home_drawer.dart';
+import 'pages/Onboarding.dart';
+import 'pages/Splash.dart';
+import 'package:her2/pages/auth/login.dart';
+import 'package:her2/constants/routes.dart';
+import 'pages/auth/register.dart';
+import 'pages/home/Home.dart';
 
-  void main() {
+  Future<void> main() async {
+
+    // WidgetsFlutterBinding.ensureInitialized();
+    // await Firebase.initializeApp();
+    // initializeDateFormatting();
+
   runApp( MaterialApp(
     debugShowCheckedModeBanner: false,
-    initialRoute: 'splash',
+
+    initialRoute: splashPage,
     routes:{
-      'splash' : (context) => SplashScreen(),
-        
-      'login' : (context) =>MyLogin(),
-      'home_drawer' : (context) => HomePage(),
-      'register' : (context) => MyRegister(),
-      'calendar' : (context) => CalendarPage(),
-      'home' : (context) => Example(),
-
-
-
+      splashPage : (context) => SplashScreen(),
+      loginPage : (context) =>MyLogin(),
+      homeDrawerPage : (context) => HomePage(),
+      registerPage : (context) => MyRegister(),
+      calendarPage : (context) => CalendarPage(),
+      homePage : (context) => Example(),
     },
   ));
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:her2/pages/AddInfo.dart';
-import 'package:her2/pages/Calendar.dart';
-import 'package:her2/pages/History.dart';
-import 'package:her2/pages/Overview.dart';
+import 'AddInfo.dart';
+import 'Calendar.dart';
+import 'History.dart';
+import 'Overview.dart';
 
-import 'package:her2/pages/settings.dart';
+import 'settings.dart';
 // import 'package:her2/pages/ui/HomePage.dart';
 // import 'package:her2/pages/blogs.dart';
 import 'package:line_icons/line_icons.dart';

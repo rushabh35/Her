@@ -1,11 +1,8 @@
-
-
 import 'dart:async';
-
-import 'package:her2/constant.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:her2/login.dart';
+import 'package:her2/constants/routes.dart';
+import 'auth/login.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -25,7 +22,7 @@ class SplashScreenState extends State<SplashScreen>
   }
 
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed('login');
+    Navigator.of(context).pushReplacementNamed(loginPage);
   }
 
   @override
