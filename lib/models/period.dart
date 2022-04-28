@@ -13,8 +13,8 @@ class Period {
   List<Map> symptoms;
 
   factory Period.fromMap(Map<String, dynamic> map) => Period(
-    startDate: map['start_date'],
-    endDate: map['end_date'],
+    startDate: map['startDate'],
+    endDate: map['endDate'],
     symptoms: map['symptoms']
   );
 }

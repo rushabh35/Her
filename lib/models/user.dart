@@ -27,7 +27,9 @@ class User {
         uid: map['uid'],
         name: map['name'],
         email: map['email'],
-        onPeriod: map['on_period']
+        onPeriod: map['onPeriod'],
+        cycleLength: map['cycleLength'],
+        periodLength: map['periodLength']
       );
 
   Map<String, dynamic> toJson() =>
@@ -35,6 +37,8 @@ class User {
         'id': uid,
         'name': name,
         'email': email,
-        'on_period': onPeriod
+        'onPeriod': onPeriod,
+        'cycleLength': cycleLength,
+        'periodLength': periodLength
       };
 }

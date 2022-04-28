@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:her2/constants/routes.dart';
+import 'package:her2/pages/AuthenticationWrapper.dart';
 import 'auth/login.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class SplashScreenState extends State<SplashScreen>
   }
 
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed(loginPage);
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => AuthenticationWrapper()));
   }
 
   @override
