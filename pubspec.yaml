@@ -43,6 +43,8 @@ dependencies:
   webview_flutter: ^3.0.2
   progress_dialog: ^1.2.4
   dio: ^4.0.6
+  simple_animations: ^4.0.1
+  sa_v1_migration: ^1.1.2
 
 dev_dependencies:
   flutter_test:

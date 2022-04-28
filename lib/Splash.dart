@@ -52,7 +52,14 @@ class SplashScreenState extends State<SplashScreen>
         fit: StackFit.expand,
         children: <Widget>[
           Container(
-            color: Colors.blue[200],
+            decoration: BoxDecoration(
+            gradient: LinearGradient(
+	                        colors: [
+	                          Color.fromRGBO(143, 148, 251, 1),
+	                          Color.fromRGBO(143, 148, 251, .6),
+	                        ]
+	                      ),
+            ),
             child: new Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[

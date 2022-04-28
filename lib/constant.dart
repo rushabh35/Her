@@ -1,2 +1,3 @@
-//  String MyLogin='/MyLogin',MyRegister='/MyRegister',
-//      Splash='/SplashScreen';
+ String MyLogin='/MyLogin',MyRegister='/MyRegister',
+     Splash='/SplashScreen';
+     
