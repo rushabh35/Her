@@ -1,6 +1,6 @@
 import 'dart:math';
 
-User userFromMap(Map<String, dynamic> data, String id) => User.fromMap(data);
+User userFromMap(Map<String, dynamic> data) => User.fromMap(data);
 
 Map userToJson(User data) => data.toJson();
 
@@ -28,8 +28,8 @@ class User {
         name: map['name'],
         email: map['email'],
         onPeriod: map['onPeriod'],
-        cycleLength: map['cycleLength'],
-        periodLength: map['periodLength']
+        cycleLength: int.parse(map['cycleLength']),
+        periodLength: int.parse(map['periodLength'])
       );
 
   Map<String, dynamic> toJson() =>

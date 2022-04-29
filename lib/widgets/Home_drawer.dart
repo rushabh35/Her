@@ -1,7 +1,12 @@
-
 import 'package:flutter/material.dart';
+import 'package:her2/services/database.dart';
+import 'package:her2/widgets/errorWidget.dart';
+import 'package:her2/widgets/loadingWidget.dart';
+import 'package:provider/provider.dart';
+import '../models/user.dart';
 import '../pages/home/Home.dart';
 import '../pages/home/settings.dart';
+import '../services/auth.dart';
 
 class DrawerItem {
   String title;
@@ -13,7 +18,8 @@ class HomePage extends StatefulWidget {
   final drawerItems = [
     new DrawerItem("Home", Icons.home),
     new DrawerItem("Blogs", Icons.book),
-    new DrawerItem("E-Commerce", Icons.shopping_cart)
+    new DrawerItem("E-Commerce", Icons.shopping_cart),
+    new DrawerItem("Signout", Icons.logout)
   ];
 
   @override
@@ -29,10 +35,16 @@ class HomePageState extends State<HomePage> {
     switch (pos) {
       case 0:
         return new Example();
+        break;
+
       // case 1:
       //   return new Blog();
       // case 2:
       //   return new AboutusFragment();
+
+      case 3:
+        context.read<AuthenticationServices>().signOut();
+        break;
 
       default:
         return new Text("Error");
@@ -43,6 +55,9 @@ class HomePageState extends State<HomePage> {
     setState(() => _selectedDrawerIndex = index);
     Navigator.of(context).pop(); // close the drawer
   }
+  
+  User? currentUser;
+  DatabaseServices _databaseServices = DatabaseServices();
 
   @override
   Widget build(BuildContext context) {
@@ -60,52 +75,64 @@ class HomePageState extends State<HomePage> {
       );
     }
 
-    return new Scaffold(
-      appBar: AppBar(
-        elevation: 20,
-        backgroundColor: Colors.black,
-        title: const Text('HER'),
-        actions: <Widget>[
-    IconButton(
-      icon: Icon(
-        Icons.settings,
-        color: Colors.white,
-      ),
-      onPressed: () {
-         Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => Settings()),
-  );
-      },
-    ) 
-  ],
-      ),
-        drawer: new Drawer(
-        child: Container(
-          // color: Color.fromARGB(255, 62, 162, 175),
-          child: new Column(
-            
-            children: <Widget>[
-              new UserAccountsDrawerHeader(
-                    decoration: BoxDecoration(
-                       color: Color(0xFF333A47),
-                    ),              
-                  accountName: new Text("Michel Clerk"), accountEmail: new Text("Michel@gmail.com"),currentAccountPicture: CircleAvatar(
-                backgroundColor:
-                Theme.of(context).platform == TargetPlatform.iOS
-                    ? Color.fromARGB(255, 0, 140, 255)
-                    : Colors.black,
-                child: Text(
-                  "M",
-                  style: TextStyle(fontSize: 40.0),
+    return FutureBuilder(
+      future: _databaseServices.getCurrentUser(),
+      builder: (context, AsyncSnapshot snapshot) {
+        if(snapshot.hasData){
+          currentUser = snapshot.data;
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 20,
+              backgroundColor: Colors.black,
+              title: const Text('HER'),
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Settings()),
+                    );
+                  },
+                )
+              ],
+            ),
+            drawer: Drawer(
+              child: Container(
+                // color: Color.fromARGB(255, 62, 162, 175),
+                child: Column(
+
+                  children: <Widget>[
+                    UserAccountsDrawerHeader(
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF333A47),
+                      ),
+                      accountName: Text(currentUser!.name), accountEmail: Text(currentUser!.email),currentAccountPicture: CircleAvatar(
+                      backgroundColor:
+                      Theme.of(context).platform == TargetPlatform.iOS
+                          ? Color.fromARGB(255, 0, 140, 255)
+                          : Colors.black,
+                      child: Text(
+                        "${currentUser!.name[0]}".toUpperCase(),
+                        style: TextStyle(fontSize: 40.0),
+                      ),
+                    ),),
+                    Column(children: drawerOptions),
+                  ],
                 ),
-              ),),
-              new Column(children: drawerOptions),
-            ],
-          ),
-        ),
-      ),
-      body: _getDrawerItemWidget(_selectedDrawerIndex),
+              ),
+            ),
+            body: _getDrawerItemWidget(_selectedDrawerIndex),
+          );
+        } else if(snapshot.hasError){
+          return CustomErrorWidget();
+        } else{
+          return LoadingWidget();
+        }
+      }
     );
   }
 }
