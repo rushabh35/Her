@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:her2/services/database.dart';
+import 'package:her2/services/sharedPrefServices.dart';
 import 'package:her2/widgets/errorWidget.dart';
 import 'package:her2/widgets/loadingWidget.dart';
 import 'package:provider/provider.dart';
@@ -62,6 +63,8 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
 
+    debugPrint("building Home drawer");
+
     List<Widget> drawerOptions = [];
     for (var i = 0; i < widget.drawerItems.length; i++) {
       var d = widget.drawerItems[i];
@@ -76,10 +79,11 @@ class HomePageState extends State<HomePage> {
     }
 
     return FutureBuilder(
-      future: _databaseServices.getCurrentUser(),
+      future: getUserFromPrefs(),
       builder: (context, AsyncSnapshot snapshot) {
         if(snapshot.hasData){
           currentUser = snapshot.data;
+          print("home drawer current user: ${currentUser}");
           return Scaffold(
             appBar: AppBar(
               elevation: 20,

@@ -22,15 +22,18 @@ class User {
   int periodLength;
   dynamic periodList;
 
-  factory User.fromMap(Map<String, dynamic> map) =>
-      User(
+  factory User.fromMap(Map<String, dynamic> map) {
+    print("in user factory");
+    print("factory map: ${map['name']}");
+    print("factory map rtt: ${map.runtimeType}");
+    return User(
         uid: map['uid'],
         name: map['name'],
         email: map['email'],
         onPeriod: map['onPeriod'],
         cycleLength: int.parse(map['cycleLength']),
         periodLength: int.parse(map['periodLength'])
-      );
+      );}
 
   Map<String, dynamic> toJson() =>
       {

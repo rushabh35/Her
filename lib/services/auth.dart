@@ -38,7 +38,7 @@ class AuthenticationServices {
       User? user = _firebaseAuth.currentUser;
       String? uid = user?.uid;
 
-      await _firebaseAuth.currentUser?.sendEmailVerification();
+      //await _firebaseAuth.currentUser?.sendEmailVerification();
 
       // await FirebaseMessaging.instance.subscribeToTopic('All');
 

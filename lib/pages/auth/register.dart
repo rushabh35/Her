@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:her2/constants/routes.dart';
+import 'package:provider/provider.dart';
+
+import '../../services/auth.dart';
+import '../AuthenticationWrapper.dart';
 
 class MyRegister extends StatefulWidget {
   const MyRegister({ Key? key }) : super(key: key);
@@ -10,6 +14,7 @@ class MyRegister extends StatefulWidget {
 
 class _MyRegisterState extends State<MyRegister> {
 
+  TextEditingController nameTextEditingController = TextEditingController();
   TextEditingController emailTextEditingController = TextEditingController();
   TextEditingController passwordTextEditingController = TextEditingController();
 
@@ -41,123 +46,150 @@ class _MyRegisterState extends State<MyRegister> {
                 ),
               ),
               SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.height * 0.28,
-                  right: 35,
-                  left: 35),
-                  child: Column(
-                    children: [
-                      TextField(
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.person),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.black)
+                child: Form(
+                  key: _formKey,
+                  child: Container(
+                    padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.28,
+                    right: 35,
+                    left: 35),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: nameTextEditingController,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.person),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.black)
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.grey)
+                            ),
+                            hintText: 'Name',
+                            hintStyle: TextStyle(color: Colors.black),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)
+                            )
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey)
-                          ),
-                          hintText: 'Name',
-                          hintStyle: TextStyle(color: Colors.black),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)
-                          )
                         ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        TextField(
+                          controller: emailTextEditingController,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.email),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.black)
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.grey)
+                            ),
+                            hintText: 'Email',
+                            hintStyle: TextStyle(color: Colors.black),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)
+                            )
+                          ),
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        TextField(
+                          controller: passwordTextEditingController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.vpn_key_rounded),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.black)
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(color: Colors.grey)
+                            ),
+                            hintText: 'Password',
+                            hintStyle: TextStyle(color: Colors.black),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)
+                            )
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                          Text('Sign Up',style:
+                          TextStyle(
+                            color: Colors.black,
+                            fontSize: 27,
+                            fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Color(0xff4c505b),
+                            child: IconButton(
+                              color: Colors.white,
+                              onPressed: () async {
+                                try{
+                                  if(_formKey.currentState!.validate()){
+                                    await context
+                                        .read<AuthenticationServices>().signup(
+                                      email: emailTextEditingController.text.trim(),
+                                      password: passwordTextEditingController.text.trim(),
+                                      name: nameTextEditingController.text.trim()
+                                    );
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            AuthenticationWrapper(),
+                                      ),
+                                    );
+                                  } else {
+                                    //todo: show toast
+                                  }
+                                } catch(e){
+                                  debugPrint(e.toString());
+                                }
+                                //Navigator.pushNamed(context, homeDrawerPage);
+                              },
+                              icon: Icon(
+                                Icons.arrow_forward,
+                            ),
+                          ),
+                        ),
+                        ],
                       ),
                       SizedBox(
-                        height: 30,
-                      ),
-                      TextField(
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.email),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.black)
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey)
-                          ),
-                          hintText: 'Email',
-                          hintStyle: TextStyle(color: Colors.black),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)
-                          )
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.vpn_key_rounded),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.black)
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey)
-                          ),
-                          hintText: 'Password',
-                          hintStyle: TextStyle(color: Colors.black),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)
-                          )
-                        ),
-                      ),
-                      SizedBox(
-                        height: 40
+                        height: 40,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                        Text('Login',style: 
-                        TextStyle(
-                          color: Colors.black,
-                          fontSize: 27,
-                          fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Color(0xff4c505b),
-                          child: IconButton(
-                            color: Colors.white,
+                          TextButton(
                             onPressed: (){
-                            Navigator.pushNamed(context, homeDrawerPage);
+                              Navigator.pushNamed(context, loginPage);
                             },
-                            icon: Icon(
-                              Icons.arrow_forward,
+                            child: Text('Login',style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            fontSize: 18,
+                            color: Colors.black
                           ),
-                        ),
-                      ),
+                          )
+                          ),
+
+                        ],
+                      )
                       ],
                     ),
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: (){
-                            Navigator.pushNamed(context, loginPage);
-                          }, 
-                          child: Text('Sign In',style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          fontSize: 18,
-                          color: Colors.black
-                        ),
-                        )
-                        ),
-                        
-                      ],
-                    )
-                    ],
                   ),
                 ),
               )

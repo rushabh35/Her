@@ -25,7 +25,7 @@ class DatabaseServices {
     print("auth uid userblah: ${jsonDecode(jsonEncode(userdata.data())).runtimeType}");
     Map<String, dynamic> userdataMap = jsonDecode(jsonEncode(userdata.data())) as Map<String, dynamic>;
     print("userdata map: ${userdataMap.runtimeType}");
-    user.User currentUser = user.User.fromMap(userdata.data() as Map<String, dynamic>);
+    user.User currentUser = user.User.fromMap(userdataMap as Map<String, dynamic>);
     debugPrint("Current user: $currentUser");
     debugPrint("Current user period: ${currentUser.periodList}");
     return currentUser;
