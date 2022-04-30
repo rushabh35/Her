@@ -82,6 +82,7 @@ class HomePageState extends State<HomePage> {
       future: getUserFromPrefs(),
       builder: (context, AsyncSnapshot snapshot) {
         if(snapshot.hasData){
+          print("snapshot has data");
           currentUser = snapshot.data;
           print("home drawer current user: ${currentUser}");
           return Scaffold(
@@ -132,6 +133,7 @@ class HomePageState extends State<HomePage> {
             body: _getDrawerItemWidget(_selectedDrawerIndex),
           );
         } else if(snapshot.hasError){
+          debugPrint("home drawer error: ${snapshot.error}");
           return CustomErrorWidget();
         } else{
           return LoadingWidget();

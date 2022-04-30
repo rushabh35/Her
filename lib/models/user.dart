@@ -27,12 +27,12 @@ class User {
     print("factory map: ${map['name']}");
     print("factory map rtt: ${map.runtimeType}");
     return User(
-        uid: map['uid'],
+        uid: map['id'],
         name: map['name'],
         email: map['email'],
         onPeriod: map['onPeriod'],
-        cycleLength: int.parse(map['cycleLength']),
-        periodLength: int.parse(map['periodLength'])
+        cycleLength: int.parse(map['cycleLength'].toString()),
+        periodLength: int.parse(map['periodLength'].toString())
       );}
 
   Map<String, dynamic> toJson() =>

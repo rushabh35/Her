@@ -48,6 +48,8 @@ dependencies:
   path_provider: ^2.0.9
   provider: ^6.0.2
   shared_preferences:
+  simple_animations: ^4.0.1
+  sa_v1_migration: ^1.1.2
 
 dev_dependencies:
   flutter_test:
