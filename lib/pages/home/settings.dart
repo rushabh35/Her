@@ -88,11 +88,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'lib.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:her2/models/user.dart';
+import 'package:her2/services/database.dart';
 bool status = false;
 
 
-class Settings extends StatelessWidget {
-  TextEditingController _textFieldController = TextEditingController();
+class Settings extends StatefulWidget {
+
+  User? currentUser;
+  Settings({this.currentUser});
+
+  @override
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+
+  TextEditingController _cycleLengthTextEditingController = TextEditingController();
+  TextEditingController _periodLengthTextEditingController = TextEditingController();
+
+  DatabaseServices _databaseServices = DatabaseServices();
 
   _displayDialog(BuildContext context) async {
     return showDialog(
@@ -102,15 +117,16 @@ class Settings extends StatelessWidget {
           return AlertDialog(
             title: Text('Cycle Length'),
             content: TextField(
-              controller: _textFieldController,
+              controller: _cycleLengthTextEditingController,
               textInputAction: TextInputAction.go,
               keyboardType: TextInputType.numberWithOptions(),
               decoration: InputDecoration(hintText: "Enter your cycle length"),
             ),
             actions: <Widget>[
-              new FlatButton(
+              FlatButton(
                 child: new Text('Submit'),
                 onPressed: () {
+                  _databaseServices.updateCycleLength(widget.currentUser!.id, int.parse(_cycleLengthTextEditingController.text));
                   Navigator.of(context).pop();
                 },
               )
@@ -127,15 +143,16 @@ class Settings extends StatelessWidget {
           return AlertDialog(
             title: Text('Period Length'),
             content: TextField(
-              controller: _textFieldController,
+              controller: _periodLengthTextEditingController,
               textInputAction: TextInputAction.go,
               keyboardType: TextInputType.numberWithOptions(),
               decoration: InputDecoration(hintText: "Enter your period length"),
             ),
             actions: <Widget>[
-              new FlatButton(
+              FlatButton(
                 child: new Text('Submit'),
                 onPressed: () {
+                  _databaseServices.updatePeriodLength(widget.currentUser!.id, int.parse(_periodLengthTextEditingController.text));
                   Navigator.of(context).pop();
                 },
               )
@@ -143,10 +160,6 @@ class Settings extends StatelessWidget {
           );
         });
   }
-
-
- 
-  
 
   @override
   Widget build(BuildContext context) {
@@ -157,12 +170,19 @@ class Settings extends StatelessWidget {
         backgroundColor: Colors.black,
         title: const Text('HER'),
         actions: <Widget>[
-    
+
   ],
       ),
       body: Column(
-        
+
         children: [
+          Text(
+            widget.currentUser!.cycleLength.toString(),
+            style: TextStyle(
+                color: Colors.white,
+              fontSize: 64
+            ),
+          ),
           Center(
             child: RaisedButton(
               // materialTapTargetSize:CupertinoIcons.square_split_1x2_fill
@@ -177,6 +197,13 @@ class Settings extends StatelessWidget {
             ),
           ),
           SizedBox(height: 40,),
+          Text(
+            widget.currentUser!.periodLength.toString(),
+            style: TextStyle(
+                color: Colors.white,
+              fontSize: 64
+            ),
+          ),
           Center(
             child: RaisedButton(
               child: Text(
@@ -189,10 +216,10 @@ class Settings extends StatelessWidget {
               onPressed: () => _displayDialogperiod(context),
             ),
           ),
-          
+
         ],
       ),
-      
+
     );
   }
 }

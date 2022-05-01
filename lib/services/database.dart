@@ -32,6 +32,18 @@ class DatabaseServices {
     return currentUser;
   }
 
+  updateCycleLength(String id, int cycleLength) async {
+    await userCollection.doc(id).update({
+      "cycleLength": cycleLength
+    });
+  }
+
+  updatePeriodLength(String id, int periodLength) async {
+    await userCollection.doc(id).update({
+      "periodLength": periodLength
+    });
+  }
+
   Future<List<Period>> getPeriodData(String id) async {
     var querySnapshot = await userCollection.doc(id).collection('periodList').get();
     List<Period> periodList = querySnapshot.docs.map((doc) => Period.fromMap(doc.data() as Map<String, dynamic>)).toList();
