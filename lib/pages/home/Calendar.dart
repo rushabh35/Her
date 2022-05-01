@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../models/user.dart';
+
 class Calendar extends StatefulWidget {
-  const Calendar(
+   Calendar(
       {Key? key,
       this.initialStartDate,
       this.initialEndDate,
       this.startEndDateChange,
       this.minimumDate,
-      this.maximumDate})
+      this.maximumDate,
+      this.currentUser})
       : super(key: key);
 
   final DateTime? minimumDate;
   final DateTime? maximumDate;
   final DateTime? initialStartDate;
   final DateTime? initialEndDate;
+  User? currentUser;
 
   final Function(DateTime, DateTime)? startEndDateChange;
 

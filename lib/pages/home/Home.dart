@@ -1,41 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import '../../models/user.dart';
 import 'AddInfo.dart';
 import 'Calendar.dart';
 import 'History.dart';
 import 'Overview.dart';
-
 import 'settings.dart';
 // import 'package:her2/pages/ui/HomePage.dart';
 // import 'package:her2/pages/blogs.dart';
 import 'package:line_icons/line_icons.dart';
 
-void main() => runApp(MaterialApp(
-    builder: (context, child) {
-      return Directionality(textDirection: TextDirection.ltr, child: child!);
-    },
-    theme: ThemeData(
-      primaryColor: Colors.grey[800],
-    ),
-    home: Example()));
-
 class Example extends StatefulWidget {
+
+  User? currentUser;
+  Example({this.currentUser});
   @override
   _ExampleState createState() => _ExampleState();
 }
 
 class _ExampleState extends State<Example> {
+
   int _selectedIndex = 0;
+
+  late List screens = [];
+
   @override
-  final screens = [
-    const Overview(title: '',),
-    AddInfo(),
-    Calendar(),
-    History(),
-    // Blog(),
-    // HomePage(title: "Her")
-  ];
-  
+  void initState() {
+    screens = [
+      Overview(title: '', currentUser: widget.currentUser,),
+      AddInfo(currentUser: widget.currentUser,),
+      Calendar(currentUser: widget.currentUser,),
+      History(currentUser: widget.currentUser,),
+      // Blog(),
+      // HomePage(title: "Her")
+    ];
+    super.initState();
+  }
 
   @override 
   Widget build(BuildContext context) {

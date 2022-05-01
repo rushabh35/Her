@@ -6,7 +6,7 @@ Map userToJson(User data) => data.toJson();
 
 class User {
   User({
-    required this.uid,
+    required this.id,
     required this.name,
     required this.email,
     this.onPeriod = false,
@@ -14,7 +14,7 @@ class User {
     this.periodLength = 6
   });
 
-  String uid;
+  String id;
   String name;
   String email;
   bool onPeriod;
@@ -27,17 +27,17 @@ class User {
     print("factory map: ${map['name']}");
     print("factory map rtt: ${map.runtimeType}");
     return User(
-        uid: map['id'],
-        name: map['name'],
-        email: map['email'],
-        onPeriod: map['onPeriod'],
+        id: map['id'],
+        name: map['name'] ?? "",
+        email: map['email'] ?? "",
+        onPeriod: map['onPeriod'] ?? false,
         cycleLength: int.parse(map['cycleLength'].toString()),
         periodLength: int.parse(map['periodLength'].toString())
       );}
 
   Map<String, dynamic> toJson() =>
       {
-        'id': uid,
+        'id': id,
         'name': name,
         'email': email,
         'onPeriod': onPeriod,

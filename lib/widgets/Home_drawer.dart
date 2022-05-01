@@ -35,7 +35,7 @@ class HomePageState extends State<HomePage> {
   _getDrawerItemWidget(int pos) {
     switch (pos) {
       case 0:
-        return new Example();
+        return Example(currentUser: currentUser,);
         break;
 
       // case 1:
@@ -79,6 +79,7 @@ class HomePageState extends State<HomePage> {
     }
 
     return FutureBuilder(
+      //future: _databaseServices.getCurrentUser(),
       future: getUserFromPrefs(),
       builder: (context, AsyncSnapshot snapshot) {
         if(snapshot.hasData){

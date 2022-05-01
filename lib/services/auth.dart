@@ -45,7 +45,7 @@ class AuthenticationServices {
       // await FirebaseMessaging.instance.subscribeToTopic('All');
 
       await _collectionReference.doc(uid).set({
-        'uid': uid,
+        'id': uid,
         'email': email,
         'name': name,
         'cycleLength': 28,

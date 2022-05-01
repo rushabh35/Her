@@ -10,11 +10,17 @@ class Period {
 
   DateTime startDate;
   DateTime endDate;
-  List<Map> symptoms;
+  List symptoms;
 
   factory Period.fromMap(Map<String, dynamic> map) => Period(
-    startDate: map['startDate'],
-    endDate: map['endDate'],
-    symptoms: map['symptoms']
+    startDate: DateTime.parse(map['startDate'].toDate().toString()),
+    endDate: DateTime.parse(map['endDate'].toDate().toString()),
+    symptoms: map['symptoms'] ?? []
   );
 }
+
+List<Period> testPeriodList = [
+
+
+
+];

@@ -1,18 +1,32 @@
-import 'package:flutter/material.dart';  
+import 'package:flutter/material.dart';
+import 'package:her2/services/database.dart';
+import 'package:her2/services/datetimeServices.dart';
+import 'package:her2/widgets/errorWidget.dart';
+
+import '../../models/period.dart';
+import '../../models/user.dart';
+import '../../widgets/loadingWidget.dart';
   
 void main() {runApp(History());}  
   
-class History extends StatefulWidget {  
+class History extends StatefulWidget {
+
+  User? currentUser;
+  History({this.currentUser});
+
   @override  
   _DataTableExample createState() => _DataTableExample();  
 }  
   
-class _DataTableExample extends State<History> {  
+class _DataTableExample extends State<History> {
+
+  List<Period>? periodList;
+
+  DatabaseServices _databaseServices = DatabaseServices();
+
   @override  
   Widget build(BuildContext context) {  
-    return MaterialApp(  
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(  
+    return Scaffold(
         backgroundColor: Color(0xFF333A47),
         // drawerScrimColor: Colors.white,
           body: ListView(
@@ -26,62 +40,71 @@ class _DataTableExample extends State<History> {
                 SizedBox(height: 30,),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Container(
-                child: DataTable(
-                  // dataRowColor: Colors.purple[400],
-                  // headingRowColor: Colors.cyan,
+              child: FutureBuilder(
+                future: _databaseServices.getPeriodData(widget.currentUser!.id),
+                builder: (context, AsyncSnapshot snapshot) {
+                  if(snapshot.hasData){
+                    periodList = snapshot.data;
+                    return Container(
+                      child: DataTable(
+                        // dataRowColor: Colors.purple[400],
+                        // headingRowColor: Colors.cyan,
 
-                  columns: const [
-                    DataColumn(label: Text(
-                        'Cycle Start',
-                        style: TextStyle(fontSize: 18,color: Colors.white)
-                    )),
-                    DataColumn(label: Text
-                    (
-                        'Period Length',
-                        style: TextStyle(fontSize: 18,color: Colors.white)
-                        // style: TextStyle(fontSize: 18,)
-                    ),
-                    ),
-                    DataColumn(label: Text(
-                        'Cycle Length',
-                        style: TextStyle(fontSize: 18,color: Colors.white)
-                        // style: TextStyle(fontSize: 18,)
-                    )),
-                  ],
-                  rows: [
-                    DataRow(cells: [
-                      DataCell(Text('Apr 1,2022',
-                        style: TextStyle(fontSize: 18,color: Colors.white)
-                      )),
-                      DataCell(Text('3',
-                        style: TextStyle(fontSize: 18,color: Colors.white)
-                      )),
-                      DataCell(Text('-',
-                        style: TextStyle(fontSize: 18,color: Colors.white)
-                      )),
-                    ]),
-                    DataRow(cells: [
-                      DataCell(Text('Apr 14,2022',
-                        style: TextStyle(fontSize: 18,color: Colors.white)
-                      )),
-                      DataCell(Text('5',
-                        style: TextStyle(fontSize: 18,color: Colors.white)
-                      )),
-                      DataCell(Text('13',
-                        style: TextStyle(fontSize: 18,color: Colors.white)
-                      )),
-                    ]),
-                  ],
-                ),
+                        columns: const [
+                          DataColumn(label: Text(
+                              'Cycle Start',
+                              style: TextStyle(fontSize: 18,color: Colors.white)
+                          )),
+                          DataColumn(label: Text
+                            (
+                              'Period Length',
+                              style: TextStyle(fontSize: 18,color: Colors.white)
+                            // style: TextStyle(fontSize: 18,)
+                          ),
+                          ),
+                          DataColumn(label: Text(
+                              'Cycle Length',
+                              style: TextStyle(fontSize: 18,color: Colors.white)
+                            // style: TextStyle(fontSize: 18,)
+                          )),
+                        ],
+                        rows: getDataRows()
+                      ),
+                    );
+                  }
+                  else if(snapshot.hasError){
+                    debugPrint("history error: ${snapshot.error}");
+                    return CustomErrorWidget();
+                  }
+                  else{
+                    return LoadingWidget();
+                  }
+                }
               ),
             ),
           ])  
-      ),  
-    );  
+      );
   }
 
-  row() {}  
+  List<DataRow> getDataRows(){
+    List<DataRow> rows = [];
+    for(int i=0;i<periodList!.length;i++){
+      rows.add(
+          DataRow(cells: [
+            DataCell(Text(periodList![i].startDate.toString(),
+                style: TextStyle(fontSize: 18,color: Colors.white)
+            )),
+            DataCell(Text(daysBetween(periodList![i].startDate, periodList![i].startDate).toString(),
+                style: TextStyle(fontSize: 18,color: Colors.white)
+            )),
+            DataCell(Text(i==0 ? "-" : daysBetween(periodList![i-1].endDate, periodList![i].startDate).toString(),
+                style: TextStyle(fontSize: 18,color: Colors.white)
+            )),
+          ])
+      );
+    };
+    return rows;
+  }
   
 }  
 

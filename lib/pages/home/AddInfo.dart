@@ -20,20 +20,30 @@
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:her2/models/period.dart';
+import 'package:her2/models/user.dart';
+import 'package:her2/services/database.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 
 
 
 class AddInfo extends StatefulWidget {
+
+  User? currentUser;
+  AddInfo({this.currentUser});
+
   @override
   _AddInfoState createState() => _AddInfoState();
 }
 
 class _AddInfoState extends State<AddInfo> {
+
   late DateTime? _selectedDate;
   List? _myActivities;
   late String _myActivitiesResult;
   final formKey = new GlobalKey<FormState>();
+
+  DatabaseServices _databaseServices = DatabaseServices();
 
   @override
   void initState() {
@@ -50,12 +60,21 @@ class _AddInfoState extends State<AddInfo> {
       setState(() {
         _myActivitiesResult = _myActivities.toString();
       });
+      _databaseServices.addPeriod(
+          id: widget.currentUser!.id,
+          period: Period(
+              startDate: _selectedDate!,
+              endDate: _selectedDate!.add(Duration(days: widget.currentUser!.periodLength)),
+            symptoms: _myActivities ?? []
+          )
+      );
     }
   }
 
   void _resetSelectedDate() {
     _selectedDate = DateTime.now().add(Duration(days: 5));
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
