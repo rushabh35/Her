@@ -109,6 +109,8 @@ class _SettingsState extends State<Settings> {
   TextEditingController _periodLengthTextEditingController = TextEditingController();
 
   DatabaseServices _databaseServices = DatabaseServices();
+  
+  late bool autoLengthSwitch;
 
   _displayDialog(BuildContext context) async {
     return showDialog(
@@ -161,6 +163,12 @@ class _SettingsState extends State<Settings> {
           );
         });
   }
+  
+  @override
+  void initState() {
+    autoLengthSwitch = widget.currentUser!.autoLength;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +196,7 @@ class _SettingsState extends State<Settings> {
             child: RaisedButton(
               // materialTapTargetSize:CupertinoIcons.square_split_1x2_fill
               child: Text(
-                'Cycle Length',
+                'Edit Cycle Length',
                 style: TextStyle(
                   color: Colors.white
                   ),
@@ -200,15 +208,15 @@ class _SettingsState extends State<Settings> {
           SizedBox(height: 40,),
           Text(
             widget.currentUser!.periodLength.toString(),
-            style: TextStyle(
+            style: const TextStyle(
                 color: Colors.white,
               fontSize: 64
             ),
           ),
           Center(
             child: RaisedButton(
-              child: Text(
-                'Period Length',
+              child: const Text(
+                'Edit Period Length',
                 style: TextStyle(
                   color: Colors.white
                   ),
@@ -218,14 +226,27 @@ class _SettingsState extends State<Settings> {
             ),
           ),
 
+          Container(
+            margin: EdgeInsets.all(20),
+            child: const Text(
+              'Edit Period Length',
+              style: TextStyle(
+                  color: Colors.white
+              ),
+            ),
+          ),
+
           Switch(
-              value: widget.currentUser!.autoLength,
+              value: autoLengthSwitch,
               onChanged: (value) async {
                 if(value){
                   List<Period> periodList = await _databaseServices.getPeriodData(currentUser: widget.currentUser!);
                   await _databaseServices.automateLengths(currentUser: widget.currentUser!, periodList: periodList);
                 }
                 await _databaseServices.updateAutoLength(userId: widget.currentUser!.id, autoLength: value);
+                setState(() {
+                  autoLengthSwitch = value;
+                });
               }
           )
 
