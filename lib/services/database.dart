@@ -5,12 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:her2/models/period.dart';
 import 'package:her2/models/user.dart' as user;
+import 'package:her2/services/datetimeServices.dart';
 
 class DatabaseServices {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   final CollectionReference userCollection = FirebaseFirestore.instance.collection('users');
+
+  final CollectionReference periodCollection = FirebaseFirestore.instance.collection('periods');
 
   Future<user.User> getUser(String id) async {
     var userdata = await userCollection.doc(id).get();
@@ -32,57 +35,130 @@ class DatabaseServices {
     return currentUser;
   }
 
-  updateCycleLength(String id, int cycleLength) async {
-    await userCollection.doc(id).update({
+  updateCycleLength({required String userId, required int cycleLength}) async {
+    await userCollection.doc(userId).update({
       "cycleLength": cycleLength
     });
   }
 
-  updatePeriodLength(String id, int periodLength) async {
-    await userCollection.doc(id).update({
+  updatePeriodLength({required String userId, required int periodLength}) async {
+    await userCollection.doc(userId).update({
       "periodLength": periodLength
     });
   }
 
-  Future<List<Period>> getPeriodData(String id) async {
-    var querySnapshot = await userCollection.doc(id).collection('periodList').get();
-    List<Period> periodList = querySnapshot.docs.map((doc) => Period.fromMap(doc.data() as Map<String, dynamic>)).toList();
-    periodList.sort((Period a, Period b) => a.startDate.compareTo(b.startDate));
+  updateAutoLength({required String userId, required bool autoLength}) async {
+    await userCollection.doc(userId).update({
+      "autoLength": autoLength
+    });
+  }
+
+  automateLengths({required user.User currentUser, required List<Period> periodList}) async {
+    int newCycleLength = 0;
+    int newPeriodLength = 0;
+    int len = periodList.length<10 ? periodList.length : 10;
+    for(int i=1;i<len;i++){
+      newCycleLength += daysBetween(periodList[i-1].endDate, periodList[i].startDate);
+      newPeriodLength += daysBetween(periodList[i].startDate, periodList[i].endDate);
+    }
+    newCycleLength = (newCycleLength/(len-1)).round();
+    if(currentUser.onPeriod){
+      newPeriodLength = (newPeriodLength/(len-1)).round();
+    } else{
+      newPeriodLength += daysBetween(periodList[0].startDate, periodList[0].endDate);
+      newPeriodLength = (newPeriodLength/len).round();
+    }
+
+    await updateCycleLength(userId: currentUser.id, cycleLength: newCycleLength);
+    await updatePeriodLength(userId: currentUser.id, periodLength: newPeriodLength);
+  }
+
+  Future<List<Period>> getPeriodData({required user.User currentUser}) async {
+    debugPrint("Current user rainbows: ${currentUser.periodList}");
+    List<Period> periodList = [];
+
+    for(int i=0;i<currentUser.periodList.length;i++){
+      var doc = await periodCollection.doc(currentUser.periodList[i]).get();
+      Period period = Period.fromMap(doc.data() as Map<String, dynamic>);
+      periodList.add(period);
+    }
+    //List<Period> periodList = docSnapshot.map((doc) => Period.fromMap(doc.data() as Map<String, dynamic>)).toList();
+    periodList.sort((Period b, Period a) => a.startDate.compareTo(b.startDate));
     debugPrint("Period list from db: $periodList");
     return periodList;
   }
 
-  Future<Period> getLatestPeriodData(String id) async {
-    debugPrint("string id: $id");
-    var querySnapshot = await userCollection.doc(id).collection('periodList').get();
-    debugPrint("qsdocs: ${querySnapshot.docs}");
-    List<Period> periodList = querySnapshot.docs.map((doc) {
-      print("Period data: ${doc.data()}");
-      return Period.fromMap(doc.data() as Map<String, dynamic>);
-    }).toList();
-    periodList.sort((Period a, Period b) => a.startDate.compareTo(b.startDate));
+  Future<Period> getLatestPeriodData({required user.User currentUser}) async {
+    List<Period> periodList = await getPeriodData(currentUser: currentUser);
     debugPrint("Latest Period list from db: $periodList");
-    return periodList.last;
+    return periodList[0];
   }
 
-  addPeriod({required String id, required Period period}) async {
-    await userCollection.doc(id).collection('periodList').add({
+  addPeriod({required Period period}) async {
+    await periodCollection.doc(period.id).set({
+      "id": period.id,
+      "userId": period.userId.trim(),
       "startDate": period.startDate,
       "endDate": period.endDate,
       "symptoms": period.symptoms
     });
+
+    await userCollection.doc(period.userId.trim()).update({
+      "periodList": FieldValue.arrayUnion([period.id])
+    });
+
+    if(DateTime.now().isBefore(period.endDate)){
+      await userCollection.doc(period.userId.trim()).update({
+        "onPeriod": true
+      });
+    }
   }
 
-  editPeriod({required String id, required Period period, required String periodId}) async {
-    await userCollection.doc(id).collection('periodList').doc(periodId).update({
+  endPeriod({required Period period}) async {
+    await periodCollection.doc(period.id).update({
+      "endDate": period.endDate,
+    });
+
+    await userCollection.doc(period.userId).update({
+      "onPeriod": false
+    });
+
+    user.User thisUser = await getUser(period.userId);
+    if(thisUser.autoLength){
+      List<Period> periodList = await getPeriodData(currentUser: thisUser);
+      automateLengths(currentUser: thisUser, periodList: periodList);
+    }
+  }
+
+  editPeriod({required Period period}) async {
+    await periodCollection.doc(period.id).update({
       "startDate": period.startDate,
       "endDate": period.endDate,
       "symptoms": period.symptoms
     });
+
+    user.User thisUser = await getUser(period.userId);
+    if(thisUser.onPeriod && DateTime.now().isAfter(period.endDate)){
+      await userCollection.doc(period.userId).update({
+        "onPeriod": false
+      });
+    }
   }
 
-  deletePeriod({required String id, required String periodId}) async {
-    await userCollection.doc(id).collection('periodList').doc(periodId).delete();
+  deletePeriod({required Period period}) async {
+    await periodCollection.doc(period.id).delete();
+
+    await userCollection.doc(period.userId).update({
+      "periodList": FieldValue.arrayRemove([period.id])
+    });
   }
+
+  // editPeriod({required String id, required Period period, required String periodId}) async {
+  //   await userCollection.doc(id).collection('periodList').doc(periodId).update({
+  //     "startDate": period.startDate,
+  //     "endDate": period.endDate,
+  //     "symptoms": period.symptoms
+  //   });
+  // }
 
 }

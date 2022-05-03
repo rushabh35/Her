@@ -41,7 +41,7 @@ class _DataTableExample extends State<History> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: FutureBuilder(
-                future: _databaseServices.getPeriodData(widget.currentUser!.id),
+                future: _databaseServices.getPeriodData(currentUser: widget.currentUser!),
                 builder: (context, AsyncSnapshot snapshot) {
                   if(snapshot.hasData){
                     periodList = snapshot.data;
@@ -89,20 +89,21 @@ class _DataTableExample extends State<History> {
   List<DataRow> getDataRows(){
     List<DataRow> rows = [];
     for(int i=0;i<periodList!.length;i++){
+      debugPrint("pl val $i : ${periodList![i].startDate}");
       rows.add(
           DataRow(cells: [
-            DataCell(Text(periodList![i].startDate.toString(),
+            DataCell(Text(getFormattedDate(periodList![i].startDate).toString(),
                 style: TextStyle(fontSize: 18,color: Colors.white)
             )),
-            DataCell(Text(daysBetween(periodList![i].startDate, periodList![i].startDate).toString(),
+            DataCell(Text(daysBetween(periodList![i].startDate, periodList![i].endDate).toString(),
                 style: TextStyle(fontSize: 18,color: Colors.white)
             )),
-            DataCell(Text(i==0 ? "-" : daysBetween(periodList![i-1].endDate, periodList![i].startDate).toString(),
+            DataCell(Text(i==0 ? "-" : daysBetween(periodList![i-1].endDate, periodList![i].startDate).abs().toString(),
                 style: TextStyle(fontSize: 18,color: Colors.white)
             )),
           ])
       );
-    };
+    }
     return rows;
   }
   

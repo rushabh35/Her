@@ -58,7 +58,7 @@ class _OverviewState extends State<Overview> {
 		return Scaffold(
 		backgroundColor: Color(0xFF333A47),
 		body: FutureBuilder(
-			future: _databaseServices.getLatestPeriodData(widget.currentUser!.id),
+			future: _databaseServices.getLatestPeriodData(currentUser: widget.currentUser!),
 			builder: (context, AsyncSnapshot snapshot) {
 
 				if(snapshot.hasData){
@@ -71,13 +71,14 @@ class _OverviewState extends State<Overview> {
 							Text(
 								displayMap['days'].toString(),
 								style: const TextStyle(
-									fontSize: 32.0,
+									fontSize: 64.0,
 									color: Color.fromARGB(255, 130, 207, 200),
 									// color: Colors.teal,
 								),
 							),
 							Text(
 								displayMap['message'],
+								textAlign: TextAlign.center,
 								style: const TextStyle(
 									fontSize: 18.0,
 									color: Color.fromARGB(255, 130, 207, 200),

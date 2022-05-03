@@ -79,8 +79,8 @@ class HomePageState extends State<HomePage> {
     }
 
     return FutureBuilder(
-      //future: _databaseServices.getCurrentUser(),
-      future: getUserFromPrefs(),
+      future: _databaseServices.getCurrentUser(),
+      //future: getUserFromPrefs(),
       builder: (context, AsyncSnapshot snapshot) {
         if(snapshot.hasData){
           print("snapshot has data");

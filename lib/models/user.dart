@@ -10,17 +10,20 @@ class User {
     required this.name,
     required this.email,
     this.onPeriod = false,
+    this.autoLength = true,
     this.cycleLength = 28,
-    this.periodLength = 6
+    this.periodLength = 6,
+    this.periodList = const []
   });
 
   String id;
   String name;
   String email;
   bool onPeriod;
+  bool autoLength;
   int cycleLength;
   int periodLength;
-  dynamic periodList;
+  List periodList;
 
   factory User.fromMap(Map<String, dynamic> map) {
     print("in user factory");
@@ -31,8 +34,10 @@ class User {
         name: map['name'] ?? "",
         email: map['email'] ?? "",
         onPeriod: map['onPeriod'] ?? false,
+        autoLength: map['autoLength'] ?? true,
         cycleLength: int.parse(map['cycleLength'].toString()),
-        periodLength: int.parse(map['periodLength'].toString())
+        periodLength: int.parse(map['periodLength'].toString()),
+        periodList: map['periodList'] ?? []
       );}
 
   Map<String, dynamic> toJson() =>

@@ -16,7 +16,7 @@
 
 // import 'dart:html';
 
-
+import 'package:uuid/uuid.dart';
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,6 +54,7 @@ class _AddInfoState extends State<AddInfo> {
   }
 
   _saveForm() {
+    var uuid = Uuid();
     var form = formKey.currentState!;
     if (form.validate()) {
       form.save();
@@ -61,8 +62,9 @@ class _AddInfoState extends State<AddInfo> {
         _myActivitiesResult = _myActivities.toString();
       });
       _databaseServices.addPeriod(
-          id: widget.currentUser!.id,
           period: Period(
+            id: uuid.v1(),
+              userId: widget.currentUser!.id,
               startDate: _selectedDate!,
               endDate: _selectedDate!.add(Duration(days: widget.currentUser!.periodLength)),
             symptoms: _myActivities ?? []
@@ -74,6 +76,8 @@ class _AddInfoState extends State<AddInfo> {
   void _resetSelectedDate() {
     _selectedDate = DateTime.now().add(Duration(days: 5));
   }
+
+  //TODO: Create screens for onPeriod edit and endPeriod
 
   @override
   Widget build(BuildContext context) {

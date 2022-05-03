@@ -50,7 +50,9 @@ class AuthenticationServices {
         'name': name,
         'cycleLength': 28,
         'periodLength': 7,
-        'onPeriod': false
+        'onPeriod': false,
+        'autoLength': true,
+        'periodList': []
       });
 
       return "Signed up";

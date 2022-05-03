@@ -125,8 +125,8 @@ class _SettingsState extends State<Settings> {
             actions: <Widget>[
               FlatButton(
                 child: new Text('Submit'),
-                onPressed: () {
-                  _databaseServices.updateCycleLength(widget.currentUser!.id, int.parse(_cycleLengthTextEditingController.text));
+                onPressed: () async {
+                  await _databaseServices.updateCycleLength(userId: widget.currentUser!.id, cycleLength: int.parse(_cycleLengthTextEditingController.text));
                   Navigator.of(context).pop();
                 },
               )
@@ -151,8 +151,8 @@ class _SettingsState extends State<Settings> {
             actions: <Widget>[
               FlatButton(
                 child: new Text('Submit'),
-                onPressed: () {
-                  _databaseServices.updatePeriodLength(widget.currentUser!.id, int.parse(_periodLengthTextEditingController.text));
+                onPressed: () async {
+                  await _databaseServices.updatePeriodLength(userId: widget.currentUser!.id, periodLength: int.parse(_periodLengthTextEditingController.text));
                   Navigator.of(context).pop();
                 },
               )

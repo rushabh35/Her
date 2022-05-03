@@ -51,6 +51,7 @@ dependencies:
   simple_animations: ^4.0.1
   sa_v1_migration: ^1.1.2
   intl: ^0.17.0
+  uuid: 3.0.6
 
 dev_dependencies:
   flutter_test:
