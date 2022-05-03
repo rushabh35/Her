@@ -27,7 +27,7 @@ class _ExampleState extends State<Example> {
   @override
   void initState() {
     screens = [
-      Overview(title: '', currentUser: widget.currentUser,),
+      Overview(title: '',),
       AddInfo(currentUser: widget.currentUser,),
       Calendar(currentUser: widget.currentUser,),
       History(currentUser: widget.currentUser,),

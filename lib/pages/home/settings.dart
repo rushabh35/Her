@@ -88,6 +88,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'lib.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:her2/models/period.dart';
 import 'package:her2/models/user.dart';
 import 'package:her2/services/database.dart';
 bool status = false;
@@ -216,6 +217,17 @@ class _SettingsState extends State<Settings> {
               onPressed: () => _displayDialogperiod(context),
             ),
           ),
+
+          Switch(
+              value: widget.currentUser!.autoLength,
+              onChanged: (value) async {
+                if(value){
+                  List<Period> periodList = await _databaseServices.getPeriodData(currentUser: widget.currentUser!);
+                  await _databaseServices.automateLengths(currentUser: widget.currentUser!, periodList: periodList);
+                }
+                await _databaseServices.updateAutoLength(userId: widget.currentUser!.id, autoLength: value);
+              }
+          )
 
         ],
       ),

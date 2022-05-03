@@ -51,6 +51,7 @@ class _DataTableExample extends State<History> {
                         // headingRowColor: Colors.cyan,
 
                         columns: const [
+                          DataColumn(label: Text('')),
                           DataColumn(label: Text(
                               'Cycle Start',
                               style: TextStyle(fontSize: 18,color: Colors.white)
@@ -92,13 +93,19 @@ class _DataTableExample extends State<History> {
       debugPrint("pl val $i : ${periodList![i].startDate}");
       rows.add(
           DataRow(cells: [
+            DataCell(
+              IconButton(
+                onPressed: (){},
+                icon: Icon(Icons.edit),
+                color: Color.fromARGB(255, 3, 233, 250),)
+            ),
             DataCell(Text(getFormattedDate(periodList![i].startDate).toString(),
                 style: TextStyle(fontSize: 18,color: Colors.white)
             )),
             DataCell(Text(daysBetween(periodList![i].startDate, periodList![i].endDate).toString(),
                 style: TextStyle(fontSize: 18,color: Colors.white)
             )),
-            DataCell(Text(i==0 ? "-" : daysBetween(periodList![i-1].endDate, periodList![i].startDate).abs().toString(),
+            DataCell(Text(i==(periodList!.length)-1 ? "-" : daysBetween(periodList![i+1].endDate, periodList![i].startDate).abs().toString(),
                 style: TextStyle(fontSize: 18,color: Colors.white)
             )),
           ])

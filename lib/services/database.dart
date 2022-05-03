@@ -57,9 +57,14 @@ class DatabaseServices {
     int newCycleLength = 0;
     int newPeriodLength = 0;
     int len = periodList.length<10 ? periodList.length : 10;
-    for(int i=1;i<len;i++){
-      newCycleLength += daysBetween(periodList[i-1].endDate, periodList[i].startDate);
-      newPeriodLength += daysBetween(periodList[i].startDate, periodList[i].endDate);
+    for(int i=0;i<len;i++){
+      if(i!=len-1){
+        newCycleLength += daysBetween(periodList[i+1].endDate, periodList[i].startDate);
+      }
+      if(i!=0){
+        newPeriodLength += daysBetween(periodList[i].startDate, periodList[i].endDate);
+      }
+      debugPrint("$i cycle: ${newCycleLength} period: ${newPeriodLength}");
     }
     newCycleLength = (newCycleLength/(len-1)).round();
     if(currentUser.onPeriod){
@@ -69,8 +74,8 @@ class DatabaseServices {
       newPeriodLength = (newPeriodLength/len).round();
     }
 
-    await updateCycleLength(userId: currentUser.id, cycleLength: newCycleLength);
-    await updatePeriodLength(userId: currentUser.id, periodLength: newPeriodLength);
+    await updateCycleLength(userId: currentUser.id, cycleLength: newCycleLength.abs());
+    await updatePeriodLength(userId: currentUser.id, periodLength: newPeriodLength.abs());
   }
 
   Future<List<Period>> getPeriodData({required user.User currentUser}) async {

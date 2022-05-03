@@ -38,7 +38,7 @@ class AddInfo extends StatefulWidget {
 
 class _AddInfoState extends State<AddInfo> {
 
-  late DateTime? _selectedDate;
+  late DateTime? _selectedStartDate;
   List? _myActivities;
   late String _myActivitiesResult;
   final formKey = new GlobalKey<FormState>();
@@ -50,7 +50,7 @@ class _AddInfoState extends State<AddInfo> {
     super.initState();
     _myActivities = [];
     _myActivitiesResult = '';
-    _resetSelectedDate();
+    _selectedStartDate = DateTime.now();
   }
 
   _saveForm() {
@@ -65,17 +65,17 @@ class _AddInfoState extends State<AddInfo> {
           period: Period(
             id: uuid.v1(),
               userId: widget.currentUser!.id,
-              startDate: _selectedDate!,
-              endDate: _selectedDate!.add(Duration(days: widget.currentUser!.periodLength)),
+              startDate: _selectedStartDate!,
+              endDate: _selectedStartDate!.add(Duration(days: widget.currentUser!.periodLength)),
             symptoms: _myActivities ?? []
           )
       );
     }
   }
 
-  void _resetSelectedDate() {
-    _selectedDate = DateTime.now().add(Duration(days: 5));
-  }
+  // void _resetSelectedDate() {
+  //   _selectedDate = DateTime.now().add(Duration(days: 5));
+  // }
 
   //TODO: Create screens for onPeriod edit and endPeriod
 
@@ -97,10 +97,10 @@ class _AddInfoState extends State<AddInfo> {
             CalendarTimeline(
               showYears: true,
               initialDate: DateTime.now(),
-              firstDate: DateTime(2021, 1, 15),
+              firstDate: DateTime(2001, 5, 5),
               lastDate: DateTime.now(),
               onDateSelected: (date) {
-                  _selectedDate = date;
+                  _selectedStartDate = date;
               },
               
               leftMargin: 20,
