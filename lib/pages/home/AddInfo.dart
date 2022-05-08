@@ -54,7 +54,7 @@ class _AddInfoState extends State<AddInfo> {
     _selectedStartDate = DateTime.now();
   }
 
-  _saveForm() {
+  _saveForm() async {
     var uuid = Uuid();
     var form = formKey.currentState!;
     if (form.validate()) {
@@ -62,7 +62,7 @@ class _AddInfoState extends State<AddInfo> {
       setState(() {
         _myActivitiesResult = _myActivities.toString();
       });
-      _databaseServices.addPeriod(
+     await  _databaseServices.addPeriod(
           period: Period(
             id: uuid.v1(),
               userId: currentUser!.id,
@@ -72,6 +72,34 @@ class _AddInfoState extends State<AddInfo> {
           )
       );
     }
+  }
+
+  _displayDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Adding Period'),
+            content: Text(
+              "Are you sure you want to do this?"
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: new Text('Yes'),
+                onPressed: () async {
+                  await _saveForm();
+                  Navigator.pop(context);
+                },
+              ),
+              FlatButton(
+                child: new Text('No'),
+                onPressed: () async {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
   }
 
   // void _resetSelectedDate() {
@@ -198,7 +226,9 @@ class _AddInfoState extends State<AddInfo> {
                               child: Text(
                                 'Save',
                               ),
-                              onPressed: _saveForm,
+                              onPressed: (){
+                                _displayDialog(context);
+                              },
                             ),
                           ),
                           Container(

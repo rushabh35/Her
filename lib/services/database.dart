@@ -149,7 +149,7 @@ class DatabaseServices {
       });
     } else if(!thisUser.onPeriod && DateTime.now().isBefore(period.endDate) && DateTime.now().isAfter(period.startDate)){
       await userCollection.doc(period.userId.trim()).update({
-        "onPeriod": false
+        "onPeriod": true
       });
     }
 
@@ -165,6 +165,18 @@ class DatabaseServices {
     await userCollection.doc(period.userId).update({
       "periodList": FieldValue.arrayRemove([period.id])
     });
+
+    user.User thisUser = await getUser(period.userId.trim());
+    if(thisUser.onPeriod && DateTime.now().isBefore(period.endDate) && DateTime.now().isAfter(period.startDate)){
+      await userCollection.doc(period.userId.trim()).update({
+        "onPeriod": false
+      });
+    }
+
+    if(thisUser.autoLength){
+      List<Period> periodList = await getPeriodData(currentUser: thisUser);
+      await automateLengths(currentUser: thisUser, periodList: periodList);
+    }
   }
 
   // editPeriod({required String id, required Period period, required String periodId}) async {
