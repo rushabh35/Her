@@ -76,6 +76,7 @@ class _DataTableExample extends State<History> {
                                             style: TextStyle(fontSize: 18,color: Colors.white)
                                           // style: TextStyle(fontSize: 18,)
                                         )),
+                                        DataColumn(label: Text('')),
                                       ],
                                       rows: getDataRows()
                                   ),
@@ -126,6 +127,15 @@ class _DataTableExample extends State<History> {
             DataCell(Text(i==(periodList!.length)-1 ? "-" : daysBetween(periodList![i+1].endDate, periodList![i].startDate).abs().toString(),
                 style: TextStyle(fontSize: 18,color: Colors.white)
             )),
+            DataCell(
+                IconButton(
+                  onPressed: () async {
+                    await _databaseServices.deletePeriod(period: periodList![i]);
+                    setState(() {});
+                  },
+                  icon: Icon(Icons.delete),
+                  color: Color.fromARGB(255, 3, 233, 250),)
+            ),
           ])
       );
     }
