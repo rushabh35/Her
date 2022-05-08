@@ -28,7 +28,7 @@ class _ExampleState extends State<Example> {
   void initState() {
     screens = [
       Overview(title: '',),
-      AddInfo(currentUser: widget.currentUser,),
+      AddInfo(),
       Calendar(),
       History(),
       // Blog(),
