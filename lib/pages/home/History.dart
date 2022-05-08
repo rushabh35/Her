@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:her2/pages/home/EditInfo.dart';
 import 'package:her2/services/database.dart';
 import 'package:her2/services/datetimeServices.dart';
 import 'package:her2/widgets/errorWidget.dart';
@@ -95,7 +96,9 @@ class _DataTableExample extends State<History> {
           DataRow(cells: [
             DataCell(
               IconButton(
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => EditInfo(thisPeriod: periodList![i])));
+                },
                 icon: Icon(Icons.edit),
                 color: Color.fromARGB(255, 3, 233, 250),)
             ),

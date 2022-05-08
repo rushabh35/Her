@@ -120,15 +120,15 @@ class DatabaseServices {
   }
 
   endPeriod({required Period period}) async {
-    await periodCollection.doc(period.id).update({
+    await periodCollection.doc(period.id.trim()).update({
       "endDate": period.endDate,
     });
 
-    await userCollection.doc(period.userId).update({
+    await userCollection.doc(period.userId.trim()).update({
       "onPeriod": false
     });
 
-    user.User thisUser = await getUser(period.userId);
+    user.User thisUser = await getUser(period.userId.trim());
     if(thisUser.autoLength){
       List<Period> periodList = await getPeriodData(currentUser: thisUser);
       automateLengths(currentUser: thisUser, periodList: periodList);
@@ -136,17 +136,26 @@ class DatabaseServices {
   }
 
   editPeriod({required Period period}) async {
-    await periodCollection.doc(period.id).update({
+    await periodCollection.doc(period.id.trim()).update({
       "startDate": period.startDate,
       "endDate": period.endDate,
       "symptoms": period.symptoms
     });
 
-    user.User thisUser = await getUser(period.userId);
+    user.User thisUser = await getUser(period.userId.trim());
     if(thisUser.onPeriod && DateTime.now().isAfter(period.endDate)){
-      await userCollection.doc(period.userId).update({
+      await userCollection.doc(period.userId.trim()).update({
         "onPeriod": false
       });
+    } else if(!thisUser.onPeriod && DateTime.now().isBefore(period.endDate) && DateTime.now().isAfter(period.startDate)){
+      await userCollection.doc(period.userId.trim()).update({
+        "onPeriod": false
+      });
+    }
+
+    if(thisUser.autoLength){
+      List<Period> periodList = await getPeriodData(currentUser: thisUser);
+      await automateLengths(currentUser: thisUser, periodList: periodList);
     }
   }
 
