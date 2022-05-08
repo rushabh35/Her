@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 
 Widget NoContentWidget(){
-  return Container(
-    child: Text("You have not added any data yet."),
+  return Center(
+    child: Container(
+      child: Text(
+          "Add your first period to start tracking!",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16
+        ),
+      ),
+    ),
   );
 }

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 Widget LoadingWidget(){
-  return Container(
-    child: Text("LOADING"),
+  return Center(
+    child: Container(
+      child: CircularProgressIndicator(
+        color: Colors.redAccent[100],
+      ),
+    ),
   );
 }

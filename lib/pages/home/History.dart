@@ -3,6 +3,7 @@ import 'package:her2/pages/home/EditInfo.dart';
 import 'package:her2/services/database.dart';
 import 'package:her2/services/datetimeServices.dart';
 import 'package:her2/widgets/errorWidget.dart';
+import 'package:her2/widgets/noContentWidget.dart';
 
 import '../../models/period.dart';
 import '../../models/user.dart';
@@ -33,10 +34,13 @@ class _DataTableExample extends State<History> {
           body: ListView(
             children: <Widget>[
             Center(  
-                child: Text(  
-                  'History', 
+                child: Container(
+                  margin: EdgeInsets.only(top: 20),
+                  child: Text(
+                    'History',
 
-                  style: TextStyle(fontSize: 25,color: Colors.white),  
+                    style: TextStyle(fontSize: 25,color: Colors.white),
+                  ),
                 )),  
                 SizedBox(height: 30,),
             SingleChildScrollView(
@@ -46,7 +50,7 @@ class _DataTableExample extends State<History> {
                 builder: (context, AsyncSnapshot snapshot) {
                   if(snapshot.hasData){
                     periodList = snapshot.data;
-                    return Container(
+                    return periodList!.isEmpty ? NoContentWidget() : Container(
                       child: DataTable(
                         // dataRowColor: Colors.purple[400],
                         // headingRowColor: Colors.cyan,
