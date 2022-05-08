@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:her2/services/database.dart';
 import 'package:her2/widgets/loadingWidget.dart';
 import 'package:intl/intl.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
 
 import '../../models/period.dart';
 import '../../models/user.dart';
@@ -37,6 +38,11 @@ class _CalendarState extends State<Calendar> {
   DatabaseServices _databaseServices = DatabaseServices();
   User? currentUser;
   List<Period> periodList = [];
+
+  DateTime? _estimatedStartDate;
+  DateTime? _estimatedEndDate;
+
+  List mySymptoms = [];
 
   @override
   void initState() {
@@ -82,6 +88,8 @@ class _CalendarState extends State<Calendar> {
               builder: (context, AsyncSnapshot<List<Period>> snap) {
               if(snap.hasData){
                 periodList = snap.data!;
+                _estimatedStartDate = periodList[0].endDate.add(Duration(days: currentUser!.cycleLength));
+                _estimatedEndDate = _estimatedStartDate!.add(Duration(days: currentUser!.periodLength));
                 return Container(
                   color: Color.fromARGB(255, 255, 255, 255),
                   child: Column(
@@ -244,7 +252,7 @@ class _CalendarState extends State<Calendar> {
                             decoration: BoxDecoration(
                               color: periodList.isNotEmpty
                                   ? getIsItStartAndEndDate(date) || getIsInRange(date)
-                                      ? Theme.of(context).primaryColor.withOpacity(0.4)
+                                      ? getColor(date)
                                       : Colors.transparent
                                   : Colors.transparent,
                               borderRadius: BorderRadius.only(
@@ -265,6 +273,9 @@ class _CalendarState extends State<Calendar> {
                     Material(
                       color: Colors.transparent,
                       child: InkWell(
+                        onTap: (){
+                          onDateClick(date);
+                        },
                         // highlightColor: Colors.white,
                         // borderRadius: const BorderRadius.all(Radius.circular(32.0)),
                         // onTap: () {
@@ -298,7 +309,7 @@ class _CalendarState extends State<Calendar> {
                           padding: const EdgeInsets.all(2),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: getIsItStartAndEndDate(date) ? Theme.of(context).primaryColor : Colors.transparent,
+                              color: getIsItStartAndEndDate(date) ? getColor(date) : Colors.transparent,
                               borderRadius: const BorderRadius.all(Radius.circular(32.0)),
                               border: Border.all(
                                 color: getIsItStartAndEndDate(date) ? Colors.white : Colors.transparent,
@@ -367,6 +378,9 @@ class _CalendarState extends State<Calendar> {
   }
 
   bool getIsInRange(DateTime date) {
+    if(_estimatedStartDate!=null && date.isAfter(_estimatedStartDate!) && _estimatedEndDate!=null && date.isBefore(_estimatedEndDate!)){
+      return true;
+    }
     for(int i=0;i<periodList.length;i++){
       if(date.isAfter(periodList[i].startDate) && date.isBefore(periodList[i].endDate)){
         return true;
@@ -385,6 +399,10 @@ class _CalendarState extends State<Calendar> {
   }
 
   bool getIsItStartAndEndDate(DateTime date) {
+    if((_estimatedStartDate!.day == date.day && _estimatedStartDate!.month == date.month && _estimatedStartDate!.year == date.year) ||
+        (_estimatedEndDate!.day == date.day && _estimatedEndDate!.month == date.month && _estimatedEndDate!.year == date.year)){
+      return true;
+    }
     for(int i=0;i<periodList.length;i++){
       if(periodList[i].startDate.day == date.day && periodList[i].startDate.month == date.month && periodList[i].startDate.year == date.year ){
         return true;
@@ -410,6 +428,9 @@ class _CalendarState extends State<Calendar> {
   }
 
   bool isStartDateRadius(DateTime date) {
+    if((_estimatedStartDate!.day == date.day && _estimatedStartDate!.month == date.month && _estimatedStartDate!.year == date.year)){
+      return true;
+    }
     for(int i=0;i<periodList.length;i++){
       if(periodList[i].startDate.day == date.day && periodList[i].startDate.month == date.month && periodList[i].startDate.year == date.year ){
         return true;
@@ -428,6 +449,9 @@ class _CalendarState extends State<Calendar> {
   }
 
   bool isEndDateRadius(DateTime date) {
+    if((_estimatedEndDate!.day == date.day && _estimatedEndDate!.month == date.month && _estimatedEndDate!.year == date.year)){
+      return true;
+    }
     for(int i=0;i<periodList.length;i++){
       if(periodList[i].endDate.day == date.day && periodList[i].endDate.month == date.month && periodList[i].endDate.year == date.year) {
         return true;
@@ -443,6 +467,141 @@ class _CalendarState extends State<Calendar> {
     // } else {
     //   return false;
     // }
+  }
+
+  Color getColor(DateTime date) {
+    if((_estimatedStartDate!=null && date.isAfter(_estimatedStartDate!) && _estimatedEndDate!=null && date.isBefore(_estimatedEndDate!)) ||
+        (_estimatedStartDate!.day == date.day && _estimatedStartDate!.month == date.month && _estimatedStartDate!.year == date.year) ||
+        (_estimatedEndDate!.day == date.day && _estimatedEndDate!.month == date.month && _estimatedEndDate!.year == date.year)){
+      return Color.fromARGB(255, 219, 231, 87).withOpacity(0.6);
+    }
+    else if(((date.isAfter(periodList[0].startDate) && date.isBefore(periodList[0].endDate)) ||
+        (periodList[0].startDate.day == date.day && periodList[0].startDate.month == date.month && periodList[0].startDate.year == date.year ) ||
+        (periodList[0].endDate.day == date.day && periodList[0].endDate.month == date.month && periodList[0].endDate.year == date.year)) && currentUser!.onPeriod){
+      return Colors.redAccent.withOpacity(0.4);
+    }
+    return Theme.of(context).primaryColor.withOpacity(0.4);
+  }
+
+  _displayDialog(BuildContext context, Period period) async {
+    setState(() {
+      mySymptoms = period.symptoms;
+    });
+    return showDialog(
+
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Cycle Length'),
+            content: Container(
+              height: 500,
+              child: MultiSelectFormField(
+                autovalidate: AutovalidateMode.disabled,
+                fillColor: Color.fromARGB(255, 175, 175, 175),
+                chipBackGroundColor: Color.fromARGB(255, 0, 0, 0),
+                chipLabelStyle: TextStyle(fontWeight: FontWeight.bold, color: Color.fromARGB(255, 252, 252, 252)),
+                dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                checkBoxActiveColor: Color(0xFF333A47),
+                checkBoxCheckColor: Colors.white,
+                dialogShapeBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12.0))),
+                title: Text(
+                  "Symptoms",
+                  style: TextStyle(fontSize: 16),
+                ),
+                validator: (value) {
+                  if (value == null || value.length == 0) {
+                    return 'Please select one or more options';
+                  }
+                  return null;
+                },
+                dataSource: [
+                  {
+                    "display": "Cramping",
+                    "value": "Cramping",
+                  },
+                  {
+                    "display": "Spotting",
+                    "value": "Spotting",
+                  },
+                  {
+                    "display": "HeadAche",
+                    "value": "HeadAche",
+                  },
+                  {
+                    "display": "Bleeding",
+                    "value": "Bleeding",
+                  },
+                  {
+                    "display": "MoodSwings",
+                    "value": "MoodSwings",
+                  },{
+                    "display": "Tired",
+                    "value": "Tired",
+                  },{
+                    "display": "Low Appetite",
+                    "value": "Low Appetite",
+                  },
+                  {
+                    "display": "High Appetite",
+                    "value": "High Appetite",
+                  },
+                ],
+                textField: 'display',
+                valueField: 'value',
+                okButtonLabel: 'OK',
+                cancelButtonLabel: 'CANCEL',
+                hintWidget: Text('No symptoms'),
+                initialValue: mySymptoms,
+                  onSaved: (value) {
+                    if (value == null) return;
+                    setState(() {
+                      mySymptoms = value;
+                    });
+                  }
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: new Text('Save'),
+                onPressed: () async {
+                  await _databaseServices.editPeriod(period: Period(
+                      id: period.id,
+                      userId: period.userId,
+                      startDate: period.startDate,
+                      endDate: period.endDate,
+                      symptoms: mySymptoms
+                    )
+                  );
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: new Text('Cancel'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+
+  }
+
+  void onDateClick(DateTime date){
+    for(int i=0;i<periodList.length;i++){
+      if(date.isAfter(periodList[i].startDate) && date.isBefore(periodList[i].endDate)){
+        _displayDialog(context, periodList[i]);
+        break;
+      } else if(periodList[i].startDate.day == date.day && periodList[i].startDate.month == date.month && periodList[i].startDate.year == date.year ){
+        _displayDialog(context, periodList[i]);
+        break;
+      }
+      else if(periodList[i].endDate.day == date.day && periodList[i].endDate.month == date.month && periodList[i].endDate.year == date.year) {
+        _displayDialog(context, periodList[i]);
+        break;
+      }
+    }
   }
 
   // void onDateClick(DateTime date) {

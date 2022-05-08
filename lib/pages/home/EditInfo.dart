@@ -76,6 +76,7 @@ class _EditInfoState extends State<EditInfo> {
               symptoms: _myActivities ?? []
           )
       );
+      Navigator.pop(context);
     }
   }
 

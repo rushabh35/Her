@@ -143,7 +143,7 @@ class DatabaseServices {
     });
 
     user.User thisUser = await getUser(period.userId.trim());
-    if(thisUser.onPeriod && DateTime.now().isAfter(period.endDate)){
+    if(thisUser.onPeriod && DateTime.now().isAfter(period.endDate) && daysBetween(period.endDate, DateTime.now())<=thisUser.periodLength){
       await userCollection.doc(period.userId.trim()).update({
         "onPeriod": false
       });
