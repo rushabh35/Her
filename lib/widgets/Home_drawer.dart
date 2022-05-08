@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:her2/pages/home/Blogs/blogs.dart';
+import 'package:her2/pages/home/ecommerce/pages/myhomepage.dart';
 import 'package:her2/services/database.dart';
 import 'package:her2/services/sharedPrefServices.dart';
 import 'package:her2/widgets/errorWidget.dart';
@@ -38,10 +40,13 @@ class HomePageState extends State<HomePage> {
         return Example(currentUser: currentUser,);
         break;
 
-      // case 1:
-      //   return new Blog();
-      // case 2:
-      //   return new AboutusFragment();
+      case 1:
+        return Blogs();
+        break;
+
+      case 2:
+        return Ecommerce();
+        break;
 
       case 3:
         context.read<AuthenticationServices>().signOut();

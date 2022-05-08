@@ -51,7 +51,13 @@ dependencies:
   simple_animations: ^4.0.1
   sa_v1_migration: ^1.1.2
   intl: ^0.17.0
-  uuid: 3.0.6
+  uuid: ^3.0.6
+  google_fonts: ^2.3.2
+  animate_do: ^2.1.0
+  badges: ^2.0.2
+  awesome_dialog: ^2.2.1
+  flutter_custom_clippers: ^2.0.0
+
 
 dev_dependencies:
   flutter_test:
