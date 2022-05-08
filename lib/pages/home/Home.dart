@@ -29,8 +29,8 @@ class _ExampleState extends State<Example> {
     screens = [
       Overview(title: '',),
       AddInfo(currentUser: widget.currentUser,),
-      Calendar(currentUser: widget.currentUser,),
-      History(currentUser: widget.currentUser,),
+      Calendar(),
+      History(),
       // Blog(),
       // HomePage(title: "Her")
     ];

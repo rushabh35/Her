@@ -13,9 +13,6 @@ void main() {runApp(History());}
   
 class History extends StatefulWidget {
 
-  User? currentUser;
-  History({this.currentUser});
-
   @override  
   _DataTableExample createState() => _DataTableExample();  
 }  
@@ -23,6 +20,7 @@ class History extends StatefulWidget {
 class _DataTableExample extends State<History> {
 
   List<Period>? periodList;
+  User? currentUser;
 
   DatabaseServices _databaseServices = DatabaseServices();
 
@@ -31,64 +29,77 @@ class _DataTableExample extends State<History> {
     return Scaffold(
         backgroundColor: Color(0xFF333A47),
         // drawerScrimColor: Colors.white,
-          body: ListView(
-            children: <Widget>[
-            Center(  
-                child: Container(
-                  margin: EdgeInsets.only(top: 20),
-                  child: Text(
-                    'History',
+          body: FutureBuilder(
+            future: _databaseServices.getCurrentUser(),
+            builder: (context, AsyncSnapshot<User> snap) {
+              if(snap.hasData){
+                currentUser = snap.data;
+                return ListView(
+                    children: <Widget>[
+                      Center(
+                          child: Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: Text(
+                              'History',
 
-                    style: TextStyle(fontSize: 25,color: Colors.white),
-                  ),
-                )),  
-                SizedBox(height: 30,),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: FutureBuilder(
-                future: _databaseServices.getPeriodData(currentUser: widget.currentUser!),
-                builder: (context, AsyncSnapshot snapshot) {
-                  if(snapshot.hasData){
-                    periodList = snapshot.data;
-                    return periodList!.isEmpty ? NoContentWidget() : Container(
-                      child: DataTable(
-                        // dataRowColor: Colors.purple[400],
-                        // headingRowColor: Colors.cyan,
+                              style: TextStyle(fontSize: 25,color: Colors.white),
+                            ),
+                          )),
+                      SizedBox(height: 30,),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: FutureBuilder(
+                            future: _databaseServices.getPeriodData(currentUser: currentUser!),
+                            builder: (context, AsyncSnapshot snapshot) {
+                              if(snapshot.hasData){
+                                periodList = snapshot.data;
+                                return periodList!.isEmpty ? NoContentWidget() : Container(
+                                  child: DataTable(
+                                    // dataRowColor: Colors.purple[400],
+                                    // headingRowColor: Colors.cyan,
 
-                        columns: const [
-                          DataColumn(label: Text('')),
-                          DataColumn(label: Text(
-                              'Cycle Start',
-                              style: TextStyle(fontSize: 18,color: Colors.white)
-                          )),
-                          DataColumn(label: Text
-                            (
-                              'Period Length',
-                              style: TextStyle(fontSize: 18,color: Colors.white)
-                            // style: TextStyle(fontSize: 18,)
-                          ),
-                          ),
-                          DataColumn(label: Text(
-                              'Cycle Length',
-                              style: TextStyle(fontSize: 18,color: Colors.white)
-                            // style: TextStyle(fontSize: 18,)
-                          )),
-                        ],
-                        rows: getDataRows()
+                                      columns: const [
+                                        DataColumn(label: Text('')),
+                                        DataColumn(label: Text(
+                                            'Cycle Start',
+                                            style: TextStyle(fontSize: 18,color: Colors.white)
+                                        )),
+                                        DataColumn(label: Text
+                                          (
+                                            'Period Length',
+                                            style: TextStyle(fontSize: 18,color: Colors.white)
+                                          // style: TextStyle(fontSize: 18,)
+                                        ),
+                                        ),
+                                        DataColumn(label: Text(
+                                            'Cycle Length',
+                                            style: TextStyle(fontSize: 18,color: Colors.white)
+                                          // style: TextStyle(fontSize: 18,)
+                                        )),
+                                      ],
+                                      rows: getDataRows()
+                                  ),
+                                );
+                              }
+                              else if(snapshot.hasError){
+                                debugPrint("history error: ${snapshot.error}");
+                                return CustomErrorWidget();
+                              }
+                              else{
+                                return LoadingWidget();
+                              }
+                            }
+                        ),
                       ),
-                    );
-                  }
-                  else if(snapshot.hasError){
-                    debugPrint("history error: ${snapshot.error}");
-                    return CustomErrorWidget();
-                  }
-                  else{
-                    return LoadingWidget();
-                  }
-                }
-              ),
-            ),
-          ])  
+                    ]);
+              } else if(snap.hasError){
+                debugPrint("history snap error: ${snap.error}");
+                return CustomErrorWidget();
+              } else {
+                return LoadingWidget();
+              }
+            }
+          )
       );
   }
 

@@ -14,15 +14,13 @@ class Calendar extends StatefulWidget {
       this.initialEndDate,
       this.startEndDateChange,
       this.minimumDate,
-      this.maximumDate,
-      this.currentUser})
+      this.maximumDate,})
       : super(key: key);
 
   final DateTime? minimumDate;
   final DateTime? maximumDate;
   final DateTime? initialStartDate;
   final DateTime? initialEndDate;
-  User? currentUser;
 
   final Function(DateTime, DateTime)? startEndDateChange;
 
@@ -370,7 +368,7 @@ class _CalendarState extends State<Calendar> {
 
   bool getIsInRange(DateTime date) {
     for(int i=0;i<periodList.length;i++){
-      if(date.isAfter(periodList[i]!.startDate) && date.isBefore(periodList[i].endDate)){
+      if(date.isAfter(periodList[i].startDate) && date.isBefore(periodList[i].endDate)){
         return true;
       }
     }
@@ -388,10 +386,10 @@ class _CalendarState extends State<Calendar> {
 
   bool getIsItStartAndEndDate(DateTime date) {
     for(int i=0;i<periodList.length;i++){
-      if(periodList[i]!.startDate.day == date.day && periodList[i]!.startDate.month == date.month && periodList[i]!.startDate.year == date.year ){
+      if(periodList[i].startDate.day == date.day && periodList[i].startDate.month == date.month && periodList[i].startDate.year == date.year ){
         return true;
       }
-      else if(periodList[i]!.endDate.day == date.day && periodList[i]!.endDate.month == date.month && periodList[i]!.endDate.year == date.year) {
+      else if(periodList[i].endDate.day == date.day && periodList[i].endDate.month == date.month && periodList[i].endDate.year == date.year) {
         return true;
       }
     }
@@ -413,7 +411,7 @@ class _CalendarState extends State<Calendar> {
 
   bool isStartDateRadius(DateTime date) {
     for(int i=0;i<periodList.length;i++){
-      if(periodList[i]!.startDate.day == date.day && periodList[i]!.startDate.month == date.month && periodList[i]!.startDate.year == date.year ){
+      if(periodList[i].startDate.day == date.day && periodList[i].startDate.month == date.month && periodList[i].startDate.year == date.year ){
         return true;
       } else if(date.weekday == 1) {
         return true;
@@ -431,7 +429,7 @@ class _CalendarState extends State<Calendar> {
 
   bool isEndDateRadius(DateTime date) {
     for(int i=0;i<periodList.length;i++){
-      if(periodList[i]!.endDate.day == date.day && periodList[i]!.endDate.month == date.month && periodList[i]!.endDate.year == date.year) {
+      if(periodList[i].endDate.day == date.day && periodList[i].endDate.month == date.month && periodList[i].endDate.year == date.year) {
         return true;
       } else if(date.weekday == 7) {
         return true;
